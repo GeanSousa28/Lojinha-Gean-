@@ -325,9 +325,7 @@ Enviar feedback
     <img id="zoomImg">
 </div>
 
-<script>
-
-<!-- COLE ISSO ANTES DO SEU <script> -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -352,13 +350,10 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 /* =========================
-   SEU SCRIPT ORIGINAL
+   SCRIPT
 ========================= */
 
 let carrinho = [];
-
-/* FEEDBACKS ONLINE */
-let feedbacks = [];
 
 /* ID ÚNICO */
 let userID = localStorage.getItem("userID");
@@ -369,8 +364,77 @@ if(!userID){
 }
 
 /* NOME FIXO */
-let nomeUsuario =
-localStorage.getItem("nomeUsuario");
+let nomeUsuario = localStorage.getItem("nomeUsuario") || "";
+
+/* MOSTRAR NOME FIXO */
+window.onload = function(){
+
+    let areaNome = document.getElementById("areaNome");
+
+    if(nomeUsuario){
+
+        areaNome.innerHTML = `
+
+        <div style="
+        background:#111;
+        padding:15px;
+        border-radius:15px;
+        border:2px solid #00ff88;
+        text-align:left;
+        ">
+
+        <b>👤 Nome:</b><br>
+        ${nomeUsuario}
+
+        <br><br>
+
+        <b>🆔 ID:</b><br>
+        ${userID.slice(0,6)}
+
+        </div>
+
+        `;
+
+    }else{
+
+        areaNome.innerHTML = `
+
+        <div style="
+        background:#111;
+        padding:15px;
+        border-radius:15px;
+        border:2px solid #00ff88;
+        ">
+
+        <h3>🆔 Salve seu nome único</h3>
+
+        <input type="text"
+        id="nomeInput"
+        placeholder="Digite seu nome"
+        style="
+        width:100%;
+        padding:12px;
+        border:none;
+        border-radius:12px;
+        ">
+
+        <br><br>
+
+        <button onclick="salvarNome()"
+        style="
+        width:100%;
+        background:#00aa88;
+        ">
+        Salvar Nome
+        </button>
+
+        </div>
+
+        `;
+    }
+
+    mostrarFeedbacks();
+}
 
 /* MENU */
 function abrir(menu){
@@ -378,10 +442,6 @@ function abrir(menu){
     document.getElementById("main").style.display="none";
 
     document.getElementById(menu).style.display="flex";
-
-    if(menu==="exemplos"){
-        mostrarFeedbacks();
-    }
 }
 
 function voltar(){
@@ -394,23 +454,7 @@ function voltar(){
     document.getElementById("main").style.display="flex";
 }
 
-/* NOME */
-if(nomeUsuario){
-
-    document.getElementById("areaNome")
-    .style.display="none";
-
-    document.getElementById("nomeSalvo")
-    .style.display="block";
-
-    document.getElementById("nomeTexto")
-    .innerText = nomeUsuario;
-
-    document.getElementById("idTexto")
-    .innerText = userID.slice(0,6);
-
-}
-
+/* SALVAR NOME */
 function salvarNome(){
 
     let nome =
@@ -423,30 +467,48 @@ function salvarNome(){
 
     localStorage.setItem("nomeUsuario",nome);
 
-    document.getElementById("nomeTexto")
-    .innerText = nome;
+    nomeUsuario = nome;
 
-    document.getElementById("idTexto")
-    .innerText = userID.slice(0,6);
+    document.getElementById("areaNome").innerHTML = `
 
-    location.reload();
+    <div style="
+    background:#111;
+    padding:15px;
+    border-radius:15px;
+    border:2px solid #00ff88;
+    text-align:left;
+    ">
+
+    <b>👤 Nome:</b><br>
+    ${nomeUsuario}
+
+    <br><br>
+
+    <b>🆔 ID:</b><br>
+    ${userID.slice(0,6)}
+
+    </div>
+
+    `;
+
+    alert("✔ Nome salvo");
 }
 
 /* CARRINHO */
-function adicionar(nome,valor){
+function adicionarCarrinho(nome,valor){
 
     carrinho.push({nome,valor});
 
-    atualizar();
+    atualizarCarrinho();
 }
 
-function atualizar(){
+function atualizarCarrinho(){
 
     let lista =
     document.getElementById("listaCarrinho");
 
     let total =
-    document.getElementById("total");
+    document.getElementById("totalCarrinho");
 
     lista.innerHTML="";
 
@@ -457,6 +519,7 @@ function atualizar(){
         soma += item.valor;
 
         lista.innerHTML += `
+
         <div class="itemCarrinho">
 
         <span>
@@ -464,52 +527,75 @@ function atualizar(){
         </span>
 
         <button class="removerBtn"
-        onclick="remover(${index})">
+        onclick="removerItem(${index})">
         ❌
         </button>
 
         </div>
+
         `;
     });
 
-    total.innerHTML="Total: R$"+soma;
+    total.innerHTML =
+    "Total: R$"+soma;
 
     document.getElementById("contador")
-    .innerText=carrinho.length;
+    .innerText = carrinho.length;
 }
 
-function remover(index){
+function removerItem(index){
 
     carrinho.splice(index,1);
 
-    atualizar();
+    atualizarCarrinho();
 }
 
-function limpar(){
+function limparCarrinho(){
 
     carrinho=[];
 
-    atualizar();
+    atualizarCarrinho();
+}
+
+/* CARRINHO FLUTUANTE */
+function toggleCarrinho(){
+
+    let popup =
+    document.getElementById("carrinhoPopup");
+
+    if(popup.style.display=="block"){
+
+        popup.style.display="none";
+
+    }else{
+
+        popup.style.display="block";
+    }
 }
 
 /* COMPRAR */
 function comprarTudo(){
 
     if(carrinho.length==0){
+
         alert("Carrinho vazio");
+
         return;
     }
 
-    let numero="556299764298";
+    let numero="5598981666909";
 
-    let msg="Olá, quero comprar:%0A%0A";
+    let msg =
+    "Olá quero comprar:%0A%0A";
 
     let soma=0;
 
     carrinho.forEach(i=>{
 
-        msg += "- "+i.nome+
-        " R$"+i.valor+"%0A";
+        msg +=
+        "- "+i.nome+
+        " R$"+i.valor+
+        "%0A";
 
         soma += i.valor;
     });
@@ -517,19 +603,32 @@ function comprarTudo(){
     msg += "%0ATotal: R$"+soma;
 
     window.open(
-    "https://wa.me/"+numero+"?text="+msg);
+    "https://wa.me/"+numero+"?text="+msg
+    );
 
-    localStorage.setItem("podeAvaliar","true");
+    localStorage.setItem(
+    "podeAvaliar",
+    "true"
+    );
 }
 
-/* FEEDBACK */
+/* ENVIAR FEEDBACK */
 function enviarFeedback(){
 
     let podeAvaliar =
     localStorage.getItem("podeAvaliar");
 
+    if(!nomeUsuario){
+
+        alert("Salve seu nome primeiro");
+
+        return;
+    }
+
     if(!podeAvaliar){
+
         alert("Compre algo primeiro");
+
         return;
     }
 
@@ -537,15 +636,19 @@ function enviarFeedback(){
     document.getElementById("textoFeedback").value;
 
     let estrelas =
-    document.getElementById("estrelas").value;
+    document.getElementById("notaFeedback").value;
 
-    if(texto.trim()==""){
-        alert("Digite algo");
+    if(estrelas==""){
+
+        alert("Escolha as estrelas");
+
         return;
     }
 
-    if(estrelas==""){
-        alert("Escolha as estrelas");
+    if(texto.trim()==""){
+
+        alert("Digite algo");
+
         return;
     }
 
@@ -554,7 +657,7 @@ function enviarFeedback(){
         nome:nomeUsuario,
         id:userID,
         texto:texto,
-        estrelas:estrelas,
+        estrelas:parseInt(estrelas),
         data:new Date().toLocaleString()
 
     });
@@ -563,9 +666,9 @@ function enviarFeedback(){
 
     document.getElementById("textoFeedback").value="";
 
-    mostrarFeedbacks();
+    document.getElementById("notaFeedback").value="";
 
-    alert("Feedback enviado");
+    alert("✔ Feedback enviado");
 }
 
 /* MOSTRAR FEEDBACKS ONLINE */
@@ -578,21 +681,28 @@ function mostrarFeedbacks(){
 
         area.innerHTML="";
 
-        let soma=0;
-        let total=0;
-
         let dados = snapshot.val();
 
         if(!dados){
+
+            document.getElementById("mediaEstrelas")
+            .innerHTML =
+            "⭐⭐⭐⭐⭐ (5.0)";
+
             return;
         }
 
-        let lista = Object.values(dados).reverse();
+        let lista =
+        Object.values(dados).reverse();
+
+        let soma=0;
 
         lista.forEach(f=>{
 
-            soma += f.estrelas.length;
-            total++;
+            soma += f.estrelas;
+
+            let estrelas =
+            "⭐".repeat(f.estrelas);
 
             area.innerHTML += `
 
@@ -606,7 +716,12 @@ function mostrarFeedbacks(){
 
             <br><br>
 
-            ${f.estrelas}
+            <span style="
+            color:gold;
+            font-size:20px;
+            ">
+            ${estrelas}
+            </span>
 
             <br><br>
 
@@ -621,33 +736,14 @@ function mostrarFeedbacks(){
             `;
         });
 
-        let media = 0;
-
-        if(total>0){
-            media = (soma / total).toFixed(1);
-        }
+        let media =
+        (soma/lista.length).toFixed(1);
 
         document.getElementById("mediaEstrelas")
         .innerHTML =
         "⭐ Média: "+media+"/5";
 
     });
-}
-
-/* CARRINHO */
-function toggleCarrinho(){
-
-    let popup =
-    document.getElementById("carrinhoPopup");
-
-    if(popup.classList.contains("ativo")){
-
-        popup.classList.remove("ativo");
-
-    }else{
-
-        popup.classList.add("ativo");
-    }
 }
 
 /* ZOOM */
@@ -665,6 +761,7 @@ function fecharZoom(){
     .style.display="none";
 }
 
-mostrarFeedbacks();
-
 </script>
+
+</body>
+    </html>
