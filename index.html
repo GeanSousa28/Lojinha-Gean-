@@ -331,18 +331,31 @@ Enviar feedback
 
 <script>
 
-/* =========================
-   FIREBASE
-========================= */
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
 
 const firebaseConfig = {
-  apiKey: "SUA_API_KEY",
-  authDomain: "SEU_PROJETO.firebaseapp.com",
-  databaseURL: "https://SEU_PROJETO-default-rtdb.firebaseio.com",
-  projectId: "SEU_PROJETO",
-  storageBucket: "SEU_PROJETO.appspot.com",
-  messagingSenderId: "000000000",
-  appId: "APP_ID"
+
+  apiKey: "AIzaSyBaFGdMHOy59fJshA-Hdr6V9e92rLa2dzU",
+
+  authDomain: "lojinhagean.firebaseapp.com",
+
+  databaseURL: "https://lojinhagean-default-rtdb.firebaseio.com",
+
+  projectId: "lojinhagean",
+
+  storageBucket: "lojinhagean.firebasestorage.app",
+
+  messagingSenderId: "572363932158",
+
+  appId: "1:572363932158:web:f9babe712b0d848a09c0af",
+
+  measurementId: "G-QR2K8NSVNG"
+
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -359,8 +372,11 @@ let carrinho = [];
 let userID = localStorage.getItem("userID");
 
 if(!userID){
+
     userID = crypto.randomUUID();
+
     localStorage.setItem("userID",userID);
+
 }
 
 /* NOME FIXO */
@@ -469,29 +485,7 @@ function salvarNome(){
 
     nomeUsuario = nome;
 
-    document.getElementById("areaNome").innerHTML = `
-
-    <div style="
-    background:#111;
-    padding:15px;
-    border-radius:15px;
-    border:2px solid #00ff88;
-    text-align:left;
-    ">
-
-    <b>👤 Nome:</b><br>
-    ${nomeUsuario}
-
-    <br><br>
-
-    <b>🆔 ID:</b><br>
-    ${userID.slice(0,6)}
-
-    </div>
-
-    `;
-
-    alert("✔ Nome salvo");
+    location.reload();
 }
 
 /* CARRINHO */
@@ -746,22 +740,4 @@ function mostrarFeedbacks(){
     });
 }
 
-/* ZOOM */
-function abrirZoom(src){
-
-    document.getElementById("zoomImg").src=src;
-
-    document.getElementById("zoomOverlay")
-    .style.display="flex";
-}
-
-function fecharZoom(){
-
-    document.getElementById("zoomOverlay")
-    .style.display="none";
-}
-
 </script>
-
-</body>
-    </html>
